@@ -15,16 +15,16 @@ pub fn count(
     // println!("count({:?}, {:?})", springs, groups);
 
     // If no springs are left & no groups are left, we have a valid solution
-    if springs.len() == 0 {
-        if groups.len() == 0 {
-            return 1;
+    if springs.is_empty() {
+        return if groups.is_empty() {
+            1
         } else {
             // Not all groups were used
-            return 0;
+            0
         }
     }
 
-    if groups.len() == 0 {
+    if groups.is_empty() {
         // Broken springs left, but no groups left
         if springs.contains(&'#') {
             return 0;
@@ -38,38 +38,34 @@ pub fn count(
     if springs[0] == '.' || springs[0] == '?' {
         let vec: Vec<char> = springs.iter().skip(1).cloned().collect();
         // println!(".? JUMP INTO: {:?} {:?}", springs, groups);
-        let count = count(vec.clone(), &groups, cache);
+        let count = count(vec.clone(), groups, cache);
         // println!(".? JUMP OUT OF {:?} {:?}", springs, groups);
-        cache.insert((vec, groups.clone()), count.clone());
+        cache.insert((vec, groups.clone()), count);
         result += count;
     }
 
-    if springs[0] == '#' || springs[0] == '?' {
-        if springs.len() >= groups[0]
-            && !springs[0..groups[0]].contains(&'.')
-            && (groups[0] == springs.len() || springs[groups[0]] != '#')
-        {
-            let new_spring_index = if groups[0] == springs.len() {
-                springs.len()
-            } else {
-                groups[0] + 1
-            };
+    if (springs[0] == '#' || springs[0] == '?') && springs.len() >= groups[0]
+            && !springs[0..groups[0]].contains(&'.') && (groups[0] == springs.len() || springs[groups[0]] != '#') {
+        let new_spring_index = if groups[0] == springs.len() {
+            springs.len()
+        } else {
+            groups[0] + 1
+        };
 
-            // result += count(
-            //     springs[new_spring_index..].to_vec(),
-            //     &groups[1..].to_vec(),
-            //     cache,
-            // );
+        // result += count(
+        //     springs[new_spring_index..].to_vec(),
+        //     &groups[1..].to_vec(),
+        //     cache,
+        // );
 
-            let vec: Vec<char> = springs.iter().skip(new_spring_index).cloned().collect();
-            let new_groups = groups[1..].to_vec();
-            let count = count(vec.clone(), &new_groups.clone(), cache);
-            cache.insert((vec, new_groups), count.clone());
-            result += count;
-        }
+        let vec: Vec<char> = springs.iter().skip(new_spring_index).cloned().collect();
+        let new_groups = groups[1..].to_vec();
+        let count = count(vec.clone(), &new_groups.clone(), cache);
+        cache.insert((vec, new_groups), count);
+        result += count;
     }
 
-    return result;
+    result
 }
 
 pub fn part1() {
@@ -78,10 +74,10 @@ pub fn part1() {
     let records = lines
         .iter()
         .map(|line| {
-            let (springs, groups) = line.split_once(" ").unwrap();
+            let (springs, groups) = line.split_once(' ').unwrap();
 
             let parsed_groups: Vec<usize> = groups
-                .split(",")
+                .split(',')
                 .map(|number| number.parse::<usize>().unwrap())
                 .collect();
 
@@ -91,7 +87,7 @@ pub fn part1() {
     let mut cache: HashMap<(Vec<char>, Vec<usize>), u64> = HashMap::new();
     let result: u64 = records
         .iter()
-        .map(|(springs, groups)| count(springs.chars().collect(), &groups, &mut cache))
+        .map(|(springs, groups)| count(springs.chars().collect(), groups, &mut cache))
         .sum();
 
     println!("Result: {}", result);
@@ -103,14 +99,14 @@ pub fn part2() {
     let records = lines
         .iter()
         .map(|line| {
-            let (springs, groups) = line.split_once(" ").unwrap();
+            let (springs, groups) = line.split_once(' ').unwrap();
 
             let repeated_groups = std::iter::repeat(groups)
                 .take(5)
                 .collect::<Vec<_>>()
                 .join(",");
             let parsed_groups: Vec<usize> = repeated_groups
-                .split(",")
+                .split(',')
                 .map(|number| number.parse::<usize>().unwrap())
                 .collect();
 
@@ -131,7 +127,7 @@ pub fn part2() {
                 items_left, arrangement_count, springs, groups
             );
             items_left -= 1;
-            return arrangement_count;
+            arrangement_count
         })
         .sum();
 

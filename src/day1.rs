@@ -7,14 +7,14 @@ pub fn part1() {
         .iter()
         .map(|line| {
             println!("{}", line);
-            let first_digit_index: usize = line.find(char::is_numeric).unwrap().into();
-            let last_digit_index: usize = line.rfind(char::is_numeric).unwrap().into();
+            let first_digit_index: usize = line.find(char::is_numeric).unwrap();
+            let last_digit_index: usize = line.rfind(char::is_numeric).unwrap();
 
-            return format!(
+            format!(
                 "{}{}",
                 line.chars().nth(first_digit_index).unwrap(),
                 line.chars().nth(last_digit_index).unwrap()
-            );
+            )
         })
         .map(|digits| digits.parse().unwrap())
         .reduce(|acc: i32, next| acc + next);
@@ -41,9 +41,9 @@ pub fn part2() {
     let result = input
         .iter()
         .map(|line| {
-            let mut first_index = line.find(char::is_numeric).unwrap().into();
+            let mut first_index = line.find(char::is_numeric).unwrap();
             let mut first_to_replace = ("", "");
-            let mut last_index = line.rfind(char::is_numeric).unwrap().into();
+            let mut last_index = line.rfind(char::is_numeric).unwrap();
             let mut last_to_replace = ("", "");
             let mut new_line = line.clone();
 
@@ -67,12 +67,12 @@ pub fn part2() {
             println!("old: {}", line);
             println!("new: {}", new_line);
 
-            return new_line;
+            new_line
         })
         .map(|line| {
             // println!("{}", line);
-            let first_digit_index: usize = line.find(char::is_numeric).unwrap().into();
-            let last_digit_index: usize = line.rfind(char::is_numeric).unwrap().into();
+            let first_digit_index: usize = line.find(char::is_numeric).unwrap();
+            let last_digit_index: usize = line.rfind(char::is_numeric).unwrap();
 
             println!(
                 "number: {}{}",
@@ -80,11 +80,11 @@ pub fn part2() {
                 line.chars().nth(last_digit_index).unwrap()
             );
 
-            return format!(
+            format!(
                 "{}{}",
                 line.chars().nth(first_digit_index).unwrap(),
                 line.chars().nth(last_digit_index).unwrap()
-            );
+            )
         })
         .map(|digits| digits.parse().unwrap())
         .reduce(|acc: i32, next| acc + next);

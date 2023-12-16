@@ -116,42 +116,59 @@ fn trace_network_inner_outer(grid: Vec<Vec<char>>, network: &Vec<(usize, usize, 
         let (x, y, pipe) = window[0];
         let (next_x, next_y, next_pipe) = window[1];
 
-        // FIXME: Do I need to count "edge cases", as I'm not adding an element atm? Or add some sort of Nil element (as it is out of bounds)
+        // FIXME: We accounted for "overlapping outer", but not for corners, which are the difference makers
+        // Alternative idea; use the pipe type to create outlines of the grid, and then use that to determine
         if x < next_x {
             // Moving east
             if y > 0 {
                 a.push((x, y - 1, grid[y - 1][x]));
+            } else {
+                a.push((x, y, grid[y][x]))
             }
 
             if y + 1 < grid.len() {
                 b.push((x, y + 1, grid[y + 1][x]));
+            } else {
+                b.push((x, y, grid[y][x]))
             }
         } else if x > next_x {
             // Moving west
             if y > 0 {
                 b.push((x, y - 1, grid[y - 1][x]));
+            } else {
+                b.push((x, y, grid[y][x]))
             }
 
             if y + 1 < grid.len() {
                 a.push((x, y + 1, grid[y + 1][x]));
+            } else {
+                a.push((x, y, grid[y][x]))
             }
         } else if y < next_y {
             // Moving south
             if x + 1 < grid[y].len() {
                 a.push((x + 1, y, grid[y][x + 1]));
+            } else {
+                a.push((x, y, grid[y][x]))
             }
 
             if x > 0 {
                 b.push((x - 1, y, grid[y][x - 1]));
+            } else {
+                b.push((x, y, grid[y][x]))
             }
         } else if y > next_y {
             // Moving north
             if x + 1 < grid[y].len() {
                 b.push((x + 1, y, grid[y][x + 1]));
+            } else {
+                b.push((x, y, grid[y][x]))
             }
 
             if x > 0 {
                 a.push((x - 1, y, grid[y][x - 1]));
+            } else {
+                a.push((x, y, grid[y][x]))
             }
         }
     });
